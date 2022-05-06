@@ -33,25 +33,35 @@ pub fn process_instruction(
 
     let accounts_iter = &mut accounts.iter();
 
-    let _token_program = next_account_info(accounts_iter)?;
-    let _burn_account = next_account_info(accounts_iter)?;
-    let _mint = next_account_info(accounts_iter)?;
-    let _authority = next_account_info(accounts_iter)?;
+    // let token_program = next_account_info(accounts_iter)?;
+    // let burn_account = next_account_info(accounts_iter)?;
+    // let mint = next_account_info(accounts_iter)?;
+    // let authority = next_account_info(accounts_iter)?;
     let metadata_account_info_a = next_account_info(accounts_iter)?;
-    let _metadata_account_info_b = next_account_info(accounts_iter)?;
+    // let metadata_account_info_b = next_account_info(accounts_iter)?;
     
+    msg!("metadata_account_info_a {:?}", metadata_account_info_a.data);
+
+    // let var: u8 = 1000;
+    // let level = instruction_data[0] as u32;
+    // let bump = instruction_data[1];
+    
+    // let metadata_account_a = UniverseMetadata::try_from_slice(&metadata_account_info_a.data.borrow())?;
+    msg!("before serialize");
     let metadata_account_a = UniverseMetadata::try_from_slice(&metadata_account_info_a.data.borrow())?;
-    // let mut metadata_account_a = UniverseMetadata::try_from_slice(&metadata_account_info_a.data.borrow())?;
     // let metadata_account_b = UniverseMetadata::try_from_slice(&metadata_account_info_b.data.borrow())?;
+
 
     // metadata_account_a.current_universe_level = metadata_account_a.current_universe_level + metadata_account_b.current_universe_level;
     msg!("metadata_account_a.current_universe_level {}", metadata_account_a.current_universe_level);
 
-    // metadata_account_a.serialize(&mut *metadata_account_info_a.try_borrow_mut_data()?)?;
-    metadata_account_a.serialize(&mut &mut metadata_account_info_a.data.borrow_mut()[..])?;
+    // metadata_account_a.current_universe_level = level;
+
+    metadata_account_a.serialize(&mut *metadata_account_info_a.try_borrow_mut_data()?)?;
+    // metadata_account_a.serialize(&mut &mut metadata_account_info_a.data.borrow_mut()[..])?;
 
 
-    let _amount = 1;
+    // let amount = 1;
 
     // let ix = burn(
     //     token_program.key,

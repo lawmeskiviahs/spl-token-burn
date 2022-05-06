@@ -10,10 +10,37 @@ import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import {getPayer, getRpcUrl} from './utils';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import * as bs58 from "bs58";
+import { BN, Program, Provider} from '@project-serum/anchor';
+import { AnchorWallet } from '@solana/wallet-adapter-react';
+import {
+  IDL as mintingProgramIdl,
+  NftCandyMachine,
+} from './idl';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+
+export interface UniverseMetadata {
+  authority: PublicKey;
+  candyMachine: PublicKey;
+  mint: PublicKey;
+  mintingEpoch: BN;
+  currentUniverseLevel: number;
+  status: number;
+  bump: number;
+  cost: BN;
+}
 
 let connection: Connection;
 let payer: Keypair;
 let programId: PublicKey;
+
+const DEVNET_URL = 'https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899';
+const ACTIVE_NETWORK = {
+  NAME: WalletAdapterNetwork.Mainnet,
+  URL: DEVNET_URL,
+};
+const TOKEN_METADATA_PREFIX = 'metadata';
+const UNIVERSE_SIGNER_SEED = 'universe';
+const UNIVERSE_PROGRAM_ID = new PublicKey('6U5p5noGQyx8Je33c8jp6dg3hzKKTcwuvtSEKJzK91KQ');
 
 export async function establishConnection(): Promise<void> {
   const rpcUrl = await getRpcUrl();
@@ -29,43 +56,58 @@ export async function establishPayer(): Promise<void> {
 export async function sayHello(): Promise<void> {
   // console.log('Saying hello to', greetedPubkey.toBase58());
 
-  const mint = new PublicKey('J6PXH6vJZhS8SNzVqathiRCLPwmsetAYQHSqwgadofxJ');
+  // const mint = new PublicKey('J6PXH6vJZhS8SNzVqathiRCLPwmsetAYQHSqwgadofxJ');
 
-  const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
-    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  );
+  // const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
+  //   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  // );
 
-  const associatedtokenaccount = (await PublicKey.findProgramAddress(
-    [
-        payer.publicKey.toBuffer(),
-        TOKEN_PROGRAM_ID.toBuffer(),
-        mint.toBuffer(),
-    ],
-    SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-  ))[0];
+  // const associatedtokenaccount = (await PublicKey.findProgramAddress(
+  //   [
+  //       payer.publicKey.toBuffer(),
+  //       TOKEN_PROGRAM_ID.toBuffer(),
+  //       mint.toBuffer(),
+  //   ],
+  //   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+  // ))[0];
 
   // console.log('reached instruction');
-  programId = new PublicKey('ByPy64kKUyfLHkAQQRPxEpC5ocuWXjXBeMcpbm8A6YgR');
-  
-  let mintPubkeya = new PublicKey("AUa5RUdky6whb3AJ351yd9vpzRm5tpvE6W4CgUnFJ72p");
-  let tokenmetaPubkeya = await Metadata.getPDA(mintPubkeya);
-  let resultt = await Metadata.load(connection, tokenmetaPubkeya);
+  // programId = new PublicKey('ByPy64kKUyfLHkAQQRPxEpC5ocuWXjXBeMcpbm8A6YgR'); // burn token programId
+  programId = new PublicKey('3Z7SKfV86kndM46WqDLf7ULnAPFyGikpwyvtPGN5siCP'); // merfe nft programId
 
-  let mintPubkeyb = new PublicKey("BSqDDYwFKmoJmjvjtNdhgcWT4J65Xd9tiE1buc6cL3gz");
-  let tokenmetaPubkeyb = await Metadata.getPDA(mintPubkeyb);
+  // let mintPubkeya = new PublicKey("AUa5RUdky6whb3AJ351yd9vpzRm5tpvE6W4CgUnFJ72p");
+  // let tokenmetaPubkeya = await Metadata.getPDA(mintPubkeya);
+  // let resultt = await Metadata.load(connection, tokenmetaPubkeya);
+
+  // let mintPubkeyb = new PublicKey("BSqDDYwFKmoJmjvjtNdhgcWT4J65Xd9tiE1buc6cL3gz");
+  // let tokenmetaPubkeyb = await Metadata.getPDA(mintPubkeyb);
   // let resulttt = await Metadata.load(connection, tokenmetaPubkeyb);
 
-  console.log(resultt);
+  let universeMetadataAccount = new PublicKey("BiSeLkWuhzSxjWnUCPfwWGRqAvhHkCRjEJpuNcsypWBf"); 
+  // let level = 10;
+
+  // console.log(resultt);
   // console.log(resulttt.data.data.uri);
 
   const signer =Keypair.fromSecretKey(
     bs58.decode("4tuQjd1M2c5pB3P3u8qLyadm6ZPAVGtjcAbEya1ucoGfXtQoEf2JaKCAtLvFkJYdBUixXRg8HFywDAJtnT9MkQpq")
   );
 
+  // console.log(signer.publicKey.toBase58());
+  
+
   const instruction = new TransactionInstruction({
-    keys: [{pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false},{pubkey: associatedtokenaccount, isSigner: false, isWritable: true},{pubkey: mint, isSigner: false, isWritable: true},{pubkey: payer.publicKey, isSigner: false, isWritable: true},{pubkey: tokenmetaPubkeya, isSigner: false, isWritable: true}, {pubkey: tokenmetaPubkeyb, isSigner: false, isWritable: true}],
+    keys: [
+      // {pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false},
+      // {pubkey: associatedtokenaccount, isSigner: false, isWritable: true},
+      // {pubkey: mint, isSigner: false, isWritable: true},
+      // {pubkey: payer.publicKey, isSigner: false, isWritable: true},
+      {pubkey: universeMetadataAccount, isSigner: false, isWritable: true}, 
+      // {pubkey: tokenmetaPubkeyb, isSigner: false, isWritable: true}
+    ],
     programId,
     data: Buffer.alloc(0),
+    // data: Buffer.from(new Uint8Array([level])),
   });
 
   // console.log('payer.pubkey', payer.publicKey.toBase58());
@@ -78,3 +120,47 @@ export async function sayHello(): Promise<void> {
   );
   console.log(result);
 }
+// async function getUniverseMetadataAcconut(
+//   pubKey: PublicKey,
+// ): Promise<PublicKey> {
+//   const seeds = [
+//     Buffer.from(TOKEN_METADATA_PREFIX),
+//     UNIVERSE_PROGRAM_ID.toBuffer(),
+//     pubKey.toBuffer(),
+//     Buffer.from(UNIVERSE_SIGNER_SEED),
+//   ];
+
+//   const [universeMetadataAddress] = await PublicKey.findProgramAddress(
+//     seeds,
+//     UNIVERSE_PROGRAM_ID,
+//   );
+//   return universeMetadataAddress;
+// }
+
+// export async function getUniverseMetadata(
+//   wallet: AnchorWallet,
+//   universeMetadataAddress: PublicKey,
+// ): Promise<UniverseMetadata | void> {
+//   let data = await getUniverseProgram(wallet);
+//   console.log('>>>>>>>>,', data);
+
+//   return await (await getUniverseProgram(wallet)).account.universeMetadata
+//     .fetch(universeMetadataAddress)
+//     .catch(console.error);
+// }
+
+// async function getUniverseProgram(
+//   wallet: AnchorWallet,
+// ): Promise<Program<NftCandyMachine>> {
+//   const provider = await new Provider(getConnection(), wallet, {
+//     commitment: 'finalized',
+//   });
+//   return new Program<NftCandyMachine>(
+//     mintingProgramIdl,
+//     UNIVERSE_PROGRAM_ID,
+//     provider,
+//   );
+// }
+// function getConnection(): Connection {
+//   return new Connection(ACTIVE_NETWORK.URL, 'confirmed');
+// }
