@@ -208,7 +208,12 @@ export async function sayHello(): Promise<void> {
   console.log('reached instruction');
   programId = new PublicKey('fYWnWoGVu25fMTzn7M1Ea9gfizGft5ZwQhVSnzfxg9e');
   const instruction = new TransactionInstruction({
-    keys: [{pubkey: tokenprogram, isSigner: false, isWritable: false},{pubkey: ata, isSigner: false, isWritable: true},{pubkey: mint, isSigner: false, isWritable: true},{pubkey: payer.publicKey, isSigner: true, isWritable: true}],
+    keys: [
+      {pubkey: tokenprogram, isSigner: false, isWritable: false},
+      {pubkey: ata, isSigner: false, isWritable: true},
+      {pubkey: mint, isSigner: false, isWritable: true},
+      {pubkey: payer.publicKey, isSigner: true, isWritable: true}
+    ],
     programId,
     data: Buffer.alloc(0), // All instructions are hellos
   });
