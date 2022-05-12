@@ -40,7 +40,7 @@ pub fn process_instruction(
     let metadata_account_info_a = next_account_info(accounts_iter)?;
     // let metadata_account_info_b = next_account_info(accounts_iter)?;
     
-    msg!("metadata_account_info_a {:?}", metadata_account_info_a.data);
+    // msg!("metadata_account_info_a {:?}", metadata_account_info_a.data);
 
     // let var: u8 = 1000;
     // let level = instruction_data[0] as u32;

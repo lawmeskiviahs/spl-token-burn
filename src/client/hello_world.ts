@@ -57,6 +57,9 @@ export async function sayHello(): Promise<void> {
   // console.log('Saying hello to', greetedPubkey.toBase58());
 
   // const mint = new PublicKey('J6PXH6vJZhS8SNzVqathiRCLPwmsetAYQHSqwgadofxJ');
+  const SIGNER_SEEDS = 'universe';
+  let mintPubkey = new PublicKey("AUa5RUdky6whb3AJ351yd9vpzRm5tpvE6W4CgUnFJ72p");
+  let CANDY_MACHINE_PROGRAM_ID = new PublicKey("4UJuwGFxWhz1mXzeKYtJyz1c6b1vzKQPqmdtX4kQwbUC");
 
   // const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
   //   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
@@ -83,7 +86,24 @@ export async function sayHello(): Promise<void> {
   // let tokenmetaPubkeyb = await Metadata.getPDA(mintPubkeyb);
   // let resulttt = await Metadata.load(connection, tokenmetaPubkeyb);
 
-  let universeMetadataAccount = new PublicKey("BiSeLkWuhzSxjWnUCPfwWGRqAvhHkCRjEJpuNcsypWBf"); 
+  let universeMetadataAccount = new PublicKey("3zyCFi76PacHcC4huFbVhk7tPZqey2n6RicFuaBLg8Wq"); 
+
+  // const [universeMetadataAccount] = await PublicKey.findProgramAddress(
+  //   [
+  //     Buffer.from('metadata'),
+  //     CANDY_MACHINE_PROGRAM_ID.toBuffer(),
+  //     mintPubkey.toBuffer(),
+  //     Buffer.from(SIGNER_SEEDS),
+  //   ],
+  //   CANDY_MACHINE_PROGRAM_ID,
+  // );
+
+  // const accountInfo = await connection.getAccountInfo(universeMetadataAccount);
+  // console.log(accountInfo?.data);
+  
+  // console.log(universeMetadataAccount.toBase58());
+  
+
   // let level = 10;
 
   // console.log(resultt);
@@ -109,10 +129,7 @@ export async function sayHello(): Promise<void> {
     data: Buffer.alloc(0),
     // data: Buffer.from(new Uint8Array([level])),
   });
-
-  // console.log('payer.pubkey', payer.publicKey.toBase58());
-  // console.log('Instruction made >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', instruction);
-
+  
   const result = await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),
@@ -120,47 +137,3 @@ export async function sayHello(): Promise<void> {
   );
   console.log(result);
 }
-// async function getUniverseMetadataAcconut(
-//   pubKey: PublicKey,
-// ): Promise<PublicKey> {
-//   const seeds = [
-//     Buffer.from(TOKEN_METADATA_PREFIX),
-//     UNIVERSE_PROGRAM_ID.toBuffer(),
-//     pubKey.toBuffer(),
-//     Buffer.from(UNIVERSE_SIGNER_SEED),
-//   ];
-
-//   const [universeMetadataAddress] = await PublicKey.findProgramAddress(
-//     seeds,
-//     UNIVERSE_PROGRAM_ID,
-//   );
-//   return universeMetadataAddress;
-// }
-
-// export async function getUniverseMetadata(
-//   wallet: AnchorWallet,
-//   universeMetadataAddress: PublicKey,
-// ): Promise<UniverseMetadata | void> {
-//   let data = await getUniverseProgram(wallet);
-//   console.log('>>>>>>>>,', data);
-
-//   return await (await getUniverseProgram(wallet)).account.universeMetadata
-//     .fetch(universeMetadataAddress)
-//     .catch(console.error);
-// }
-
-// async function getUniverseProgram(
-//   wallet: AnchorWallet,
-// ): Promise<Program<NftCandyMachine>> {
-//   const provider = await new Provider(getConnection(), wallet, {
-//     commitment: 'finalized',
-//   });
-//   return new Program<NftCandyMachine>(
-//     mintingProgramIdl,
-//     UNIVERSE_PROGRAM_ID,
-//     provider,
-//   );
-// }
-// function getConnection(): Connection {
-//   return new Connection(ACTIVE_NETWORK.URL, 'confirmed');
-// }
