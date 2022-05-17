@@ -5,9 +5,7 @@
 import {
   establishConnection,
   establishPayer,
-  checkProgram,
   sayHello,
-  reportGreetings,
 } from './hello_world';
 
 async function main() {
