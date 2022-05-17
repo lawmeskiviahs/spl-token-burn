@@ -2,8 +2,6 @@ import {
   Keypair,
   Connection,
   PublicKey,
-  LAMPORTS_PER_SOL,
-  SystemProgram,
   TransactionInstruction,
   Transaction,
   sendAndConfirmTransaction,
@@ -29,7 +27,7 @@ export async function establishPayer(): Promise<void> {
 }
 
 export async function sayHello(): Promise<void> {
-  // console.log('Saying hello to', greetedPubkey.toBase58());
+
   const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
   tokenprogram = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
   const mint = new PublicKey('6642UyGLtN9dhQMVNKB5xGUxYtPp9dCFSmHh9cuz3Sb3');
@@ -38,10 +36,6 @@ export async function sayHello(): Promise<void> {
     [payer.publicKey.toBuffer(), tokenprogram.toBuffer(), mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID
 );
-
-    // console.log(address.toBase58());
-    // console.log(payer.publicKey.toBase58());
-    
 
   const ata = new PublicKey('D3LqKTZuWGD1TZUrQF8LzgDtUyihFnVpSy5EfyhGtmae');
   console.log('reached instruction');
@@ -54,28 +48,14 @@ export async function sayHello(): Promise<void> {
       {pubkey: payer.publicKey, isSigner: true, isWritable: true}
     ],
     programId,
-    data: Buffer.alloc(0), // All instructions are hellos
+    data: Buffer.alloc(0),
   });
-  // console.log('payer.pubkey', payer.publicKey.toBase58());
-  // console.log('Instruction made >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', instruction);
-  // console.log()
+
   const result = await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),
     [payer],
   );
   console.log('======================',result);
-}
 
-//
-// const status = 0;
-// const level = 3;
-// const instruction = new TransactionInstruction({
-//   keys: [
-//     {pubkey: mint_universe_metadata, isSigner: false, isWritable: true},
-//     {pubkey: mint, isSigner: false, isWritable: false},
-//     {pubkey: update_authority, isSigner: true, isWritable: false},
-//   ],
-//   programId,
-//   data: Buffer.from(new Uint8Array([status, level])), // All instructions are hellos
-// });
+}
